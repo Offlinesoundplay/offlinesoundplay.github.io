@@ -11,7 +11,7 @@
         .player-container {
             padding: 40px 0;
         }
-        
+
         .back-btn {
             display: inline-flex;
             align-items: center;
@@ -26,33 +26,34 @@
             transition: all 0.2s ease;
             margin-bottom: 30px;
             border: 1px solid var(--primary-light);
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         .back-btn:hover {
             background-color: var(--primary);
             color: var(--white);
             transform: translateX(-5px);
         }
-        
+
         .player-main {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 40px;
             min-height: 600px;
         }
-        
+
         .player-left, .player-right {
             background-color: var(--white);
             border: 1px solid var(--border-light);
             border-radius: var(--radius-lg);
             padding: 30px;
         }
-        
+
         .player-left {
             display: flex;
             flex-direction: column;
         }
-        
+
         .album-art-large {
             width: 240px;
             height: 240px;
@@ -63,12 +64,16 @@
             align-items: center;
             justify-content: center;
             color: var(--white);
-            font-size: 60px;
             position: relative;
             overflow: hidden;
             box-shadow: var(--shadow-lg);
         }
-        
+
+        .album-art-large svg {
+            width: 80px;
+            height: 80px;
+        }
+
         .album-art-large::before {
             content: '';
             position: absolute;
@@ -79,17 +84,17 @@
             background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
             animation: shine 3s infinite linear;
         }
-        
+
         @keyframes shine {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
         .song-info-large {
             text-align: center;
             margin-bottom: 30px;
         }
-        
+
         .song-info-large h1 {
             font-size: 28px;
             font-weight: 700;
@@ -99,20 +104,20 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .song-info-large p {
             font-size: 18px;
             color: var(--text-secondary);
             margin-bottom: 5px;
         }
-        
+
         .song-meta-large {
             display: flex;
             justify-content: center;
             gap: 20px;
             margin-top: 10px;
         }
-        
+
         .meta-item {
             display: flex;
             align-items: center;
@@ -120,12 +125,17 @@
             color: var(--text-muted);
             font-size: 14px;
         }
-        
+
+        .meta-item svg {
+            width: 14px;
+            height: 14px;
+        }
+
         /* Progress Container */
         .progress-container {
             margin: 30px 0;
         }
-        
+
         .progress-bar-large {
             height: 4px;
             background-color: var(--gray-200);
@@ -134,7 +144,7 @@
             cursor: pointer;
             margin: 10px 0;
         }
-        
+
         .progress-fill-large {
             position: absolute;
             top: 0;
@@ -144,14 +154,14 @@
             border-radius: var(--radius-full);
             width: 0%;
         }
-        
+
         .progress-time-container {
             display: flex;
             justify-content: space-between;
             font-size: 12px;
             color: var(--text-muted);
         }
-        
+
         /* Player Controls */
         .player-controls {
             display: flex;
@@ -160,7 +170,7 @@
             gap: 15px;
             margin: 30px 0;
         }
-        
+
         .control-btn-large {
             width: 44px;
             height: 44px;
@@ -174,14 +184,15 @@
             justify-content: center;
             font-size: 16px;
             transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         .control-btn-large:hover {
             background-color: var(--primary);
             color: var(--white);
             transform: scale(1.1);
         }
-        
+
         .control-btn-large.play-btn-large {
             width: 56px;
             height: 56px;
@@ -189,7 +200,7 @@
             color: var(--white);
             font-size: 20px;
         }
-        
+
         /* Volume Control */
         .volume-control {
             display: flex;
@@ -198,12 +209,12 @@
             gap: 15px;
             margin-top: 20px;
         }
-        
+
         .volume-slider-container {
             flex: 1;
             max-width: 150px;
         }
-        
+
         .volume-slider {
             width: 100%;
             height: 4px;
@@ -213,7 +224,7 @@
             border-radius: var(--radius-full);
             outline: none;
         }
-        
+
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -223,7 +234,7 @@
             border-radius: 50%;
             cursor: pointer;
         }
-        
+
         .volume-slider::-moz-range-thumb {
             width: 16px;
             height: 16px;
@@ -232,7 +243,7 @@
             cursor: pointer;
             border: none;
         }
-        
+
         /* Right Panel */
         .suggestions-header {
             display: flex;
@@ -240,7 +251,7 @@
             align-items: center;
             margin-bottom: 20px;
         }
-        
+
         .suggestions-header h2 {
             font-size: 20px;
             font-weight: 600;
@@ -249,7 +260,7 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         .refresh-btn {
             width: 36px;
             height: 36px;
@@ -262,20 +273,21 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         .refresh-btn:hover {
             background-color: var(--primary);
             color: var(--white);
             transform: rotate(180deg);
         }
-        
+
         .suggestions-list {
             max-height: 250px;
             overflow-y: auto;
             margin-bottom: 30px;
         }
-        
+
         .suggestion-item {
             display: flex;
             align-items: center;
@@ -284,12 +296,13 @@
             border-bottom: 1px solid var(--border-light);
             cursor: pointer;
             transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         .suggestion-item:hover {
             background-color: var(--gray-50);
         }
-        
+
         .suggestion-icon {
             width: 40px;
             height: 40px;
@@ -300,12 +313,17 @@
             justify-content: center;
             color: var(--primary);
         }
-        
+
+        .suggestion-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
         .suggestion-details {
             flex: 1;
             min-width: 0;
         }
-        
+
         .suggestion-title {
             font-size: 14px;
             font-weight: 600;
@@ -314,7 +332,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .suggestion-artist {
             font-size: 12px;
             color: var(--text-secondary);
@@ -322,13 +340,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .suggestion-duration {
             font-size: 12px;
             color: var(--text-muted);
             white-space: nowrap;
         }
-        
+
         /* Queue Section */
         .queue-section h3 {
             font-size: 18px;
@@ -339,12 +357,12 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         .queue-list {
             max-height: 200px;
             overflow-y: auto;
         }
-        
+
         .queue-item {
             display: flex;
             align-items: center;
@@ -353,17 +371,18 @@
             border-bottom: 1px solid var(--border-light);
             cursor: pointer;
             transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         .queue-item:hover {
             background-color: var(--gray-50);
         }
-        
+
         .queue-item.playing {
             background-color: var(--primary-extra-light);
             border-left: 3px solid var(--primary);
         }
-        
+
         .queue-icon {
             width: 32px;
             height: 32px;
@@ -375,12 +394,12 @@
             color: var(--text-secondary);
             font-size: 14px;
         }
-        
+
         .queue-details {
             flex: 1;
             min-width: 0;
         }
-        
+
         .queue-title {
             font-size: 13px;
             font-weight: 600;
@@ -389,7 +408,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .queue-artist {
             font-size: 11px;
             color: var(--text-secondary);
@@ -397,13 +416,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .queue-duration {
             font-size: 11px;
             color: var(--text-muted);
             white-space: nowrap;
         }
-        
+
         /* Additional Controls */
         .additional-controls {
             display: flex;
@@ -413,7 +432,7 @@
             padding-top: 20px;
             border-top: 1px solid var(--border-light);
         }
-        
+
         .additional-btn {
             display: flex;
             flex-direction: column;
@@ -426,70 +445,80 @@
             transition: all 0.2s ease;
             padding: 10px;
             border-radius: var(--radius-md);
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         .additional-btn:hover {
             background-color: var(--primary-extra-light);
             color: var(--primary);
         }
-        
-        .additional-btn i {
-            font-size: 20px;
+
+        .additional-btn svg {
+            width: 20px;
+            height: 20px;
         }
-        
+
         .additional-btn span {
             font-size: 12px;
         }
-        
+
         /* Responsive */
         @media (max-width: 1024px) {
             .player-main {
                 gap: 30px;
             }
         }
-        
+
         @media (max-width: 768px) {
             .player-main {
                 grid-template-columns: 1fr;
                 gap: 30px;
             }
-            
+
             .player-left, .player-right {
                 padding: 20px;
             }
-            
+
             .album-art-large {
                 width: 180px;
                 height: 180px;
-                font-size: 48px;
             }
-            
+
+            .album-art-large svg {
+                width: 60px;
+                height: 60px;
+            }
+
             .player-controls {
                 gap: 10px;
             }
-            
+
             .control-btn-large {
                 width: 40px;
                 height: 40px;
             }
-            
+
             .control-btn-large.play-btn-large {
                 width: 50px;
                 height: 50px;
             }
         }
-        
+
         @media (max-width: 480px) {
             .album-art-large {
                 width: 150px;
                 height: 150px;
-                font-size: 36px;
             }
-            
+
+            .album-art-large svg {
+                width: 50px;
+                height: 50px;
+            }
+
             .song-info-large h1 {
                 font-size: 22px;
             }
-            
+
             .song-info-large p {
                 font-size: 16px;
             }
@@ -500,32 +529,45 @@
     <div class="app-container">
         <div class="player-container">
             <a href="../index.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
                 Back to Library
             </a>
-            
+
             <div class="player-main">
                 <!-- Left Panel - Now Playing -->
                 <div class="player-left">
                     <div class="album-art-large" id="album-art-large">
-                        <i class="fas fa-music"></i>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18V5l12-2v13"/>
+                            <circle cx="6" cy="18" r="3"/>
+                            <circle cx="18" cy="16" r="3"/>
+                        </svg>
                     </div>
-                    
+
                     <div class="song-info-large" id="song-info-large">
                         <h1 id="full-player-title">No Song Selected</h1>
                         <p id="full-player-artist">Select a song from library</p>
                         <div class="song-meta-large">
                             <span class="meta-item" id="song-duration">
-                                <i class="far fa-clock"></i>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
                                 <span>0:00</span>
                             </span>
                             <span class="meta-item">
-                                <i class="fas fa-database"></i>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <polyline points="21 15 16 10 5 21"/>
+                                </svg>
                                 <span>Offline Available</span>
                             </span>
                         </div>
                     </div>
-                    
+
                     <!-- Progress Bar -->
                     <div class="progress-container">
                         <div class="progress-time-container">
@@ -536,30 +578,52 @@
                             <div class="progress-fill-large" id="progress-fill-large"></div>
                         </div>
                     </div>
-                    
+
                     <!-- Player Controls -->
                     <div class="player-controls">
                         <button class="control-btn-large" id="shuffle-btn" title="Shuffle">
-                            <i class="fas fa-random"></i>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16 3 21 3 21 8"/>
+                                <line x1="4" y1="20" x2="21" y2="3"/>
+                                <polyline points="21 16 21 21 16 21"/>
+                                <line x1="15" y1="15" x2="21" y2="21"/>
+                                <line x1="4" y1="4" x2="9" y2="9"/>
+                            </svg>
                         </button>
                         <button class="control-btn-large" id="prev-btn-large" title="Previous">
-                            <i class="fas fa-step-backward"></i>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="19 20 9 12 19 4 19 20"/>
+                                <line x1="5" y1="19" x2="5" y2="5"/>
+                            </svg>
                         </button>
                         <button class="control-btn-large play-btn-large" id="play-btn-large" title="Play/Pause">
-                            <i class="fas fa-play" id="play-icon-large"></i>
+                            <svg id="play-icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
                         </button>
                         <button class="control-btn-large" id="next-btn-large" title="Next">
-                            <i class="fas fa-step-forward"></i>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="5 4 15 12 5 20 5 4"/>
+                                <line x1="19" y1="5" x2="19" y2="19"/>
+                            </svg>
                         </button>
                         <button class="control-btn-large" id="repeat-btn" title="Repeat">
-                            <i class="fas fa-redo"></i>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="17 1 21 5 17 9"/>
+                                <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+                                <polyline points="7 23 3 19 7 15"/>
+                                <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                            </svg>
                         </button>
                     </div>
-                    
+
                     <!-- Volume Control -->
                     <div class="volume-control">
                         <button class="control-btn-large" id="volume-mute-btn-large" title="Mute">
-                            <i class="fas fa-volume-up" id="volume-icon-large"></i>
+                            <svg id="volume-icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                            </svg>
                         </button>
                         <div class="volume-slider-container">
                             <input type="range" 
@@ -570,45 +634,70 @@
                                    value="80">
                         </div>
                     </div>
-                    
+
                     <!-- Additional Controls -->
                     <div class="additional-controls">
                         <button class="additional-btn" id="like-btn" title="Add to Favorites">
-                            <i class="far fa-heart"></i>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
                             <span>Like</span>
                         </button>
                         <button class="additional-btn" id="download-btn" title="Download">
-                            <i class="fas fa-download"></i>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
                             <span>Download</span>
                         </button>
                         <button class="additional-btn" id="share-btn" title="Share">
-                            <i class="fas fa-share-alt"></i>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="18" cy="5" r="3"/>
+                                <circle cx="6" cy="12" r="3"/>
+                                <circle cx="18" cy="19" r="3"/>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                            </svg>
                             <span>Share</span>
                         </button>
                         <button class="additional-btn" id="lyrics-btn" title="Lyrics">
-                            <i class="fas fa-align-left"></i>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="14" width="18" height="8" rx="1" ry="1"/>
+                                <line x1="7" y1="10" x2="17" y2="10"/>
+                                <line x1="7" y1="6" x2="17" y2="6"/>
+                                <line x1="7" y1="2" x2="17" y2="2"/>
+                            </svg>
                             <span>Lyrics</span>
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- Right Panel - Suggestions & Queue -->
                 <div class="player-right">
                     <div class="suggestions-section">
                         <div class="suggestions-header">
                             <h2>
-                                <i class="fas fa-headphones"></i>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+                                </svg>
                                 More Like This
                             </h2>
                             <button class="refresh-btn" id="refresh-suggestions" title="Refresh">
-                                <i class="fas fa-sync-alt"></i>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M23 4v6h-6"/>
+                                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                                </svg>
                             </button>
                         </div>
                         <div class="suggestions-list" id="suggestions-list">
-                            <!-- Suggestions will be loaded here -->
                             <div class="suggestion-item empty-suggestions">
                                 <div class="suggestion-icon">
-                                    <i class="fas fa-music"></i>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M9 18V5l12-2v13"/>
+                                        <circle cx="6" cy="18" r="3"/>
+                                        <circle cx="18" cy="16" r="3"/>
+                                    </svg>
                                 </div>
                                 <div class="suggestion-details">
                                     <div class="suggestion-title">No suggestions available</div>
@@ -617,16 +706,25 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="queue-section">
                         <h3>
-                            <i class="fas fa-list-ol"></i>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="8" y1="7" x2="16" y2="7"/>
+                                <line x1="8" y1="12" x2="16" y2="12"/>
+                                <line x1="8" y1="17" x2="16" y2="17"/>
+                            </svg>
                             Play Queue
                         </h3>
                         <div class="queue-list" id="queue-list">
                             <div class="queue-item empty-queue">
                                 <div class="queue-icon">
-                                    <i class="fas fa-music"></i>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M9 18V5l12-2v13"/>
+                                        <circle cx="6" cy="18" r="3"/>
+                                        <circle cx="18" cy="16" r="3"/>
+                                    </svg>
                                 </div>
                                 <div class="queue-details">
                                     <div class="queue-title">Queue is empty</div>
