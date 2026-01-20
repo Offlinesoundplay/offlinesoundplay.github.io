@@ -1,5 +1,18 @@
 // script.js - Clean Professional Implementation
 document.addEventListener('DOMContentLoaded', function() {
+    // Register Service Worker for offline functionality
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered:', registration);
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        });
+    }
+
     // Music Database
     const musicDatabase = {
         eng: [
@@ -116,12 +129,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 path: 'eng/staywithme.mp3'
             },
             { 
-                id: 'untilfindyou',
-                filename: 'untilfindyou.mp3',
+                id: 'untilifoundyou',
+                filename: 'untilifoundyou.mp3',
                 title: 'Until I Found You', 
                 artist: 'Stephen Sanchez',
                 duration: '2:57',
-                path: 'eng/untilfindyou.mp3'
+                path: 'eng/untilifoundyou.mp3'
             }
         ],
         hin: []
@@ -150,8 +163,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalDurationEl = document.getElementById('total-duration');
     const audioPlayer = document.getElementById('audio-player');
     const miniPlayerClickable = document.getElementById('mini-player-clickable');
-    const cacheProgressFill = document.getElementById('cache-progress-fill');
-    const cachePercentage = document.getElementById('cache-percentage');
     const cachedSongsEl = document.getElementById('cached-songs');
 
     // Player State
@@ -170,7 +181,19 @@ document.addEventListener('DOMContentLoaded', function() {
         renderSongs('eng');
         setupEventListeners();
         updateStats();
-        simulateOfflineReady();
+        updateOfflineStatus();
+    }
+
+    // Update offline status
+    function updateOfflineStatus() {
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            // Service worker is active
+            const statusText = document.querySelector('.status-text');
+            if (statusText) {
+                statusText.textContent = 'Ready for Offline';
+            }
+            cachedSongsEl.textContent = musicDatabase.eng.length;
+        }
     }
 
     // Render songs for a category
@@ -178,33 +201,36 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = category === 'eng' ? engSongsContainer : hinSongsContainer;
         const songs = musicDatabase[category];
         currentSongs = songs;
-        
+
         container.innerHTML = '';
-        
+
         if (songs.length === 0) {
             const emptyState = document.createElement('div');
             emptyState.className = 'empty-state';
             emptyState.innerHTML = `
                 <div class="empty-icon">
-                    <i class="fas fa-folder-plus"></i>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                    </svg>
                 </div>
                 <h3>No ${category === 'eng' ? 'English' : 'Hindi'} Songs</h3>
                 <p>Add your ${category === 'eng' ? 'English' : 'Hindi'} songs to the '${category}/' folder</p>
                 <button class="add-songs-btn">
-                    <i class="fas fa-plus"></i>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
                     Add Songs
                 </button>
             `;
             container.appendChild(emptyState);
-            
-            // Add event listener to the button
+
             const addBtn = emptyState.querySelector('.add-songs-btn');
             addBtn.addEventListener('click', () => {
                 showNotification(`Add MP3 files to the '${category}/' folder`);
             });
             return;
         }
-        
+
         songs.forEach((song, index) => {
             const songCard = createSongCard(song, index);
             container.appendChild(songCard);
@@ -217,11 +243,15 @@ document.addEventListener('DOMContentLoaded', function() {
         card.className = 'song-card';
         card.dataset.id = song.id;
         card.dataset.index = index;
-        
+
         card.innerHTML = `
             <div class="song-header">
                 <div class="song-icon">
-                    <i class="fas fa-music"></i>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18V5l12-2v13"/>
+                        <circle cx="6" cy="18" r="3"/>
+                        <circle cx="18" cy="16" r="3"/>
+                    </svg>
                 </div>
                 <div class="song-meta">
                     <div class="song-title">${song.title}</div>
@@ -230,15 +260,22 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div class="song-footer">
                 <div class="song-duration">
-                    <i class="far fa-clock"></i>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
                     <span>${song.duration}</span>
                 </div>
                 <div class="song-actions">
                     <button class="action-btn play-btn" data-action="play" title="Play">
-                        <i class="fas fa-play"></i>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
                     </button>
                     <button class="action-btn" data-action="queue" title="Add to Queue">
-                        <i class="fas fa-plus"></i>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -248,44 +285,39 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="eq-bar"></div>
             </div>
         `;
-        
-        // Add click events
+
         card.addEventListener('click', (e) => {
             if (!e.target.closest('.action-btn')) {
                 playSong(song, index);
             }
         });
-        
-        // Add action button events
+
         const playBtn = card.querySelector('.play-btn');
         const queueBtn = card.querySelector('[data-action="queue"]');
-        
+
         playBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             playSong(song, index);
         });
-        
+
         queueBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             addToQueue(song);
         });
-        
+
         return card;
     }
 
     // Set up event listeners
     function setupEventListeners() {
-        // Category switching
         engTab.addEventListener('click', () => switchCategory('eng'));
         hinTab.addEventListener('click', () => switchCategory('hin'));
-        
-        // Player controls
+
         playPauseBtn.addEventListener('click', togglePlayPause);
         prevBtn.addEventListener('click', playPrevious);
         nextBtn.addEventListener('click', playNext);
         muteBtn.addEventListener('click', toggleMute);
-        
-        // Progress bar interaction
+
         progressBarMini.addEventListener('click', seekAudio);
         progressBarMini.addEventListener('mousemove', (e) => {
             updateThumbPosition(e);
@@ -294,17 +326,14 @@ document.addEventListener('DOMContentLoaded', function() {
         progressBarMini.addEventListener('mouseleave', () => {
             progressThumb.style.opacity = '0';
         });
-        
-        // Mini player click to open full player
+
         miniPlayerClickable.addEventListener('click', openFullPlayer);
-        
-        // Audio events
+
         audioPlayer.addEventListener('loadedmetadata', updateDuration);
         audioPlayer.addEventListener('timeupdate', updateProgress);
         audioPlayer.addEventListener('ended', playNext);
         audioPlayer.addEventListener('error', handleAudioError);
-        
-        // Keyboard shortcuts
+
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
                 e.preventDefault();
@@ -326,20 +355,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Switch between categories
     function switchCategory(category) {
         currentCategory = category;
-        
-        // Update tabs
+
         engTab.classList.toggle('active', category === 'eng');
         hinTab.classList.toggle('active', category === 'hin');
-        
-        // Update song grids
+
         engSongsContainer.classList.toggle('active', category === 'eng');
         hinSongsContainer.classList.toggle('active', category === 'hin');
-        
-        // Update current songs list
+
         currentSongs = musicDatabase[category];
         currentSongIndex = -1;
-        
-        // Reset playing state
+
         if (lastPlayingCard) {
             lastPlayingCard.classList.remove('playing');
         }
@@ -350,32 +375,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Play a song
     function playSong(song, index) {
-        // Update playing state
         if (lastPlayingCard) {
             lastPlayingCard.classList.remove('playing');
         }
-        
+
         const cards = document.querySelectorAll('.song-card');
         if (cards[index]) {
             cards[index].classList.add('playing');
             lastPlayingCard = cards[index];
         }
-        
+
         currentSong = song;
         currentSongIndex = index;
-        
-        // Update UI
+
         currentSongTitle.textContent = song.title;
         currentSongArtist.textContent = song.artist;
-        
-        // Show mini player
+
         miniPlayer.classList.add('active');
-        
-        // Load and play audio
+
         audioPlayer.src = song.path;
-        
+
         const playPromise = audioPlayer.play();
-        
+
         if (playPromise !== undefined) {
             playPromise.then(() => {
                 isPlaying = true;
@@ -383,15 +404,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 startProgressUpdate();
             }).catch(error => {
                 console.error('Error playing audio:', error);
-                // Handle autoplay restrictions
                 showNotification('Click the play button to start playback');
                 isPlaying = false;
                 updatePlayButton();
-                // Set up click-to-play
-                playPauseBtn.addEventListener('click', function handler() {
-                    playAudio();
-                    playPauseBtn.removeEventListener('click', handler);
-                });
             });
         }
     }
@@ -399,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Play audio
     function playAudio() {
         if (!currentSong) return;
-        
+
         audioPlayer.play().then(() => {
             isPlaying = true;
             updatePlayButton();
@@ -421,13 +436,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Toggle play/pause
     function togglePlayPause() {
         if (!currentSong) {
-            // If no song is selected, play first song
             if (currentSongs.length > 0) {
                 playSong(currentSongs[0], 0);
             }
             return;
         }
-        
+
         if (isPlaying) {
             pauseAudio();
         } else {
@@ -438,20 +452,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Play previous song
     function playPrevious() {
         if (currentSongs.length === 0) return;
-        
+
         let newIndex = currentSongIndex - 1;
         if (newIndex < 0) {
-            newIndex = currentSongs.length - 1; // Wrap to last song
+            newIndex = currentSongs.length - 1;
         }
-        
+
         playSong(currentSongs[newIndex], newIndex);
     }
 
     // Play next song
     function playNext() {
         if (currentSongs.length === 0) return;
-        
-        // Check queue first
+
         if (queue.length > 0) {
             const nextSong = queue.shift();
             const index = currentSongs.findIndex(song => song.id === nextSong.id);
@@ -461,13 +474,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
         }
-        
-        // Otherwise play next in list
+
         let newIndex = currentSongIndex + 1;
         if (newIndex >= currentSongs.length) {
-            newIndex = 0; // Wrap to first song
+            newIndex = 0;
         }
-        
+
         playSong(currentSongs[newIndex], newIndex);
     }
 
@@ -475,23 +487,33 @@ document.addEventListener('DOMContentLoaded', function() {
     function toggleMute() {
         isMuted = !isMuted;
         audioPlayer.muted = isMuted;
-        
-        volumeIcon.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+
+        const volumeSvg = volumeIcon.querySelector('svg');
+        if (isMuted) {
+            volumeSvg.innerHTML = '<path d="M17 6l-6 6H7v6h4l6 6V6z"/><path d="M21 9l-6 6M15 9l6 6"/>';
+        } else {
+            volumeSvg.innerHTML = '<path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/>';
+        }
     }
 
     // Update play button icon
     function updatePlayButton() {
-        playIcon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+        const playSvg = playIcon.querySelector('svg');
+        if (isPlaying) {
+            playSvg.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+        } else {
+            playSvg.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+        }
     }
 
     // Update progress bar
     function updateProgress() {
         if (!audioPlayer.duration || isNaN(audioPlayer.duration)) return;
-        
+
         const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
         progressFill.style.width = `${progress}%`;
         progressThumb.style.left = `${progress}%`;
-        
+
         currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
     }
 
@@ -505,12 +527,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Seek audio
     function seekAudio(e) {
         if (!audioPlayer.duration || isNaN(audioPlayer.duration)) return;
-        
+
         const rect = progressBarMini.getBoundingClientRect();
         let percent = (e.clientX - rect.left) / rect.width;
         percent = Math.max(0, Math.min(1, percent));
         const time = percent * audioPlayer.duration;
-        
+
         audioPlayer.currentTime = time;
         updateProgress();
     }
@@ -518,11 +540,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update thumb position on hover
     function updateThumbPosition(e) {
         if (!audioPlayer.duration || isNaN(audioPlayer.duration)) return;
-        
+
         const rect = progressBarMini.getBoundingClientRect();
         let percent = (e.clientX - rect.left) / rect.width;
         percent = Math.max(0, Math.min(1, percent));
-        
+
         progressThumb.style.left = `${percent * 100}%`;
     }
 
@@ -543,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Format time (seconds to MM:SS)
     function formatTime(seconds) {
         if (isNaN(seconds)) return '0:00';
-        
+
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${mins}:${secs.toString().padStart(2, '0')}`;
@@ -551,44 +573,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add song to queue
     function addToQueue(song) {
-        // Don't add if already in queue
         if (queue.some(item => item.id === song.id)) {
             showNotification('Song already in queue');
             return;
         }
-        
-        queue.push(song);
-        showNotification(`"${song.title}" added to queue`);
-        
-        // Update queue display
-        updateQueueDisplay();
-    }
 
-    // Update queue display
-    function updateQueueDisplay() {
-        // This would update the queue UI if we had one
-        console.log('Queue updated:', queue.map(s => s.title));
+        queue.push(song);
+        showNotification(`${song.title} added to queue`);
     }
 
     // Show notification
     function showNotification(message) {
-        // Remove existing notification
         const existingNotification = document.querySelector('.notification');
         if (existingNotification) {
             existingNotification.remove();
         }
-        
-        // Create notification element
+
         const notification = document.createElement('div');
         notification.className = 'notification';
         notification.innerHTML = `
-            <i class="fas fa-check-circle"></i>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
             <span>${message}</span>
         `;
-        
+
         document.body.appendChild(notification);
-        
-        // Remove after 3 seconds
+
         setTimeout(() => {
             notification.classList.add('slide-out');
             setTimeout(() => {
@@ -603,12 +615,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleAudioError() {
         console.error('Audio error:', audioPlayer.error);
         showNotification('Error playing audio file');
-        
-        // Reset playing state
+
         isPlaying = false;
         updatePlayButton();
         stopProgressUpdate();
-        
+
         if (lastPlayingCard) {
             lastPlayingCard.classList.remove('playing');
         }
@@ -620,8 +631,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showNotification('Select a song first');
             return;
         }
-        
-        // Save current state
+
         const playerState = {
             song: currentSong,
             category: currentCategory,
@@ -630,7 +640,7 @@ document.addEventListener('DOMContentLoaded', function() {
             currentTime: audioPlayer.currentTime,
             isPlaying: isPlaying
         };
-        
+
         try {
             localStorage.setItem('playerState', JSON.stringify(playerState));
             window.location.href = 'player/index.html';
@@ -643,42 +653,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update stats
     function updateStats() {
         const totalSongs = musicDatabase.eng.length + musicDatabase.hin.length;
-        
-        // Calculate total duration
+
         let totalSeconds = 0;
         musicDatabase.eng.forEach(song => {
             const [mins, secs] = song.duration.split(':').map(Number);
             totalSeconds += mins * 60 + secs;
         });
-        
+
         totalSongsEl.textContent = totalSongs;
         totalDurationEl.textContent = formatTime(totalSeconds);
-    }
-
-    // Simulate offline ready status
-    function simulateOfflineReady() {
-        let progress = 0;
-        const totalSongs = musicDatabase.eng.length;
-        
-        const cacheInterval = setInterval(() => {
-            progress += 5;
-            
-            cacheProgressFill.style.width = `${progress}%`;
-            cachePercentage.textContent = `${progress}%`;
-            cachedSongsEl.textContent = Math.floor((progress / 100) * totalSongs);
-            
-            if (progress >= 100) {
-                clearInterval(cacheInterval);
-                cachePercentage.textContent = '100%';
-                cachedSongsEl.textContent = totalSongs;
-                
-                // Update offline status
-                const statusText = document.querySelector('.status-text');
-                if (statusText) {
-                    statusText.textContent = 'Ready for Offline';
-                }
-            }
-        }, 100);
     }
 
     // Initialize the application
