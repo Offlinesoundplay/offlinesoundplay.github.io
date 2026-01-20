@@ -2,31 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Offline Sound Player</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <style>
-        /* Remove all tap highlights and focus rings */
+        /* Prevent overflow and overlays */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+            position: relative;
+        }
+        
         * {
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
-            -webkit-user-select: none;
             user-select: none;
+            box-sizing: border-box;
         }
-
-        input, button, a, .song-card, .action-btn, .control-btn {
-            outline: none;
-        }
-
-        button:focus, a:focus, input:focus {
-            outline: none;
-            box-shadow: none;
-        }
-
-        img {
-            -webkit-user-drag: none;
+        
+        button, a, input {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
     </style>
 </head>
@@ -37,13 +35,11 @@
             <div class="circle circle-1"></div>
             <div class="circle circle-2"></div>
             <div class="circle circle-3"></div>
-            <div class="wave wave-1"></div>
-            <div class="wave wave-2"></div>
         </div>
 
         <header class="app-header">
             <div class="logo-section">
-                <svg class="sound-icon" viewBox="0 0 24 24">
+                <svg class="sound-icon" viewBox="0 0 24 24" fill="#10b981">
                     <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                 </svg>
                 <div class="logo-text">
@@ -52,7 +48,7 @@
                 </div>
                 <div class="offline-status">
                     <div class="status-dot"></div>
-                    <span class="status-text">Ready for Offline</span>
+                    <span class="status-text" id="status-text">Loading...</span>
                 </div>
             </div>
         </header>
@@ -61,7 +57,9 @@
             <div class="stats-bar">
                 <div class="stat">
                     <div class="stat-icon">
-                        <i class="fas fa-music"></i>
+                        <svg viewBox="0 0 24 24" fill="#10b981">
+                            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                        </svg>
                     </div>
                     <div class="stat-info">
                         <span class="stat-value" id="total-songs">15</span>
@@ -70,16 +68,23 @@
                 </div>
                 <div class="stat">
                     <div class="stat-icon">
-                        <i class="fas fa-database"></i>
+                        <svg viewBox="0 0 24 24" fill="#10b981">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                        </svg>
                     </div>
                     <div class="stat-info">
-                        <span class="stat-value" id="cached-songs">15</span>
+                        <span class="stat-value" id="cached-songs">0</span>
                         <span class="stat-label">Cached</span>
                     </div>
                 </div>
                 <div class="stat">
                     <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
+                        <svg viewBox="0 0 24 24" fill="#10b981">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
                     </div>
                     <div class="stat-info">
                         <span class="stat-value" id="total-duration">58:27</span>
@@ -90,7 +95,7 @@
 
             <div class="category-selector">
                 <div class="section-title">
-                    <svg class="title-icon" viewBox="0 0 24 24">
+                    <svg class="title-icon" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
                     </svg>
                     <h2>Music Library</h2>
@@ -99,7 +104,10 @@
                     <button class="category-tab active" id="eng-tab" data-category="eng">
                         <div class="tab-content">
                             <div class="tab-icon">
-                                <i class="fas fa-globe-americas"></i>
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                                </svg>
                             </div>
                             <span class="tab-text">English Songs</span>
                             <span class="song-count">15</span>
@@ -108,7 +116,10 @@
                     <button class="category-tab" id="hin-tab" data-category="hin">
                         <div class="tab-content">
                             <div class="tab-icon">
-                                <i class="fas fa-flag"></i>
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
                             </div>
                             <span class="tab-text">Hindi Songs</span>
                             <span class="song-count">0</span>
@@ -124,12 +135,16 @@
                 <div class="songs-grid" id="hin-songs">
                     <div class="empty-state">
                         <div class="empty-icon">
-                            <i class="fas fa-folder-plus"></i>
+                            <svg viewBox="0 0 24 24" fill="#10b981">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                            </svg>
                         </div>
                         <h3>No Hindi Songs Yet</h3>
                         <p>Add your Hindi songs to the 'hin/' folder</p>
                         <button class="add-songs-btn">
-                            <i class="fas fa-plus"></i>
+                            <svg viewBox="0 0 24 24" fill="white">
+                                <path d="M12 5v14M5 12h14"/>
+                            </svg>
                             Add Songs
                         </button>
                     </div>
@@ -143,7 +158,9 @@
                 <div class="current-song-info" id="mini-player-clickable">
                     <div class="album-art-mini">
                         <div class="album-art-placeholder">
-                            <i class="fas fa-music"></i>
+                            <svg viewBox="0 0 24 24" fill="white">
+                                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                            </svg>
                         </div>
                         <div class="playing-indicator">
                             <div class="eq-bar"></div>
@@ -158,17 +175,28 @@
                 </div>
 
                 <div class="mini-controls">
-                    <button class="control-btn" id="prev-btn">
-                        <i class="fas fa-step-backward"></i>
+                    <button class="control-btn" id="prev-btn" title="Previous">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="19 20 9 12 19 4 19 20"/>
+                            <line x1="5" y1="19" x2="5" y2="5"/>
+                        </svg>
                     </button>
-                    <button class="control-btn play-btn" id="play-pause-btn">
-                        <i class="fas fa-play" id="play-icon"></i>
+                    <button class="control-btn play-btn" id="play-pause-btn" title="Play/Pause">
+                        <svg id="play-icon" viewBox="0 0 24 24" fill="white">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
                     </button>
-                    <button class="control-btn" id="next-btn">
-                        <i class="fas fa-step-forward"></i>
+                    <button class="control-btn" id="next-btn" title="Next">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="5 4 15 12 5 20 5 4"/>
+                            <line x1="19" y1="5" x2="19" y2="19"/>
+                        </svg>
                     </button>
-                    <button class="control-btn" id="mute-btn">
-                        <i class="fas fa-volume-up" id="volume-icon"></i>
+                    <button class="control-btn" id="mute-btn" title="Mute">
+                        <svg id="volume-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -176,7 +204,6 @@
                 <div class="progress-time" id="current-time">0:00</div>
                 <div class="progress-bar-mini">
                     <div class="progress-fill-mini" id="progress-fill"></div>
-                    <div class="progress-thumb" id="progress-thumb"></div>
                 </div>
                 <div class="progress-time" id="total-time">0:00</div>
             </div>
@@ -186,5 +213,21 @@
     <audio id="audio-player" preload="metadata"></audio>
 
     <script src="script.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(registration => {
+                        console.log('SW registered:', registration);
+                        document.getElementById('status-text').textContent = 'Ready for Offline';
+                    })
+                    .catch(error => {
+                        console.log('SW registration failed:', error);
+                        document.getElementById('status-text').textContent = 'Online Only';
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
