@@ -6,6 +6,29 @@
     <title>Offline Sound Player</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        /* Remove all tap highlights and focus rings */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        input, button, a, .song-card, .action-btn, .control-btn {
+            outline: none;
+        }
+
+        button:focus, a:focus, input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        img {
+            -webkit-user-drag: none;
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -27,17 +50,9 @@
                     <h1>OfflineSoundPlay</h1>
                     <p class="tagline">Your music, always available</p>
                 </div>
-                <div class="cache-status">
-                    <div class="cache-indicator">
-                        <div class="cache-dot"></div>
-                        <span>Auto-Caching Active</span>
-                    </div>
-                    <div class="cache-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="cache-progress-fill"></div>
-                        </div>
-                        <span id="cache-percentage">0%</span>
-                    </div>
+                <div class="offline-status">
+                    <div class="status-dot"></div>
+                    <span class="status-text">Ready for Offline</span>
                 </div>
             </div>
         </header>
@@ -58,7 +73,7 @@
                         <i class="fas fa-database"></i>
                     </div>
                     <div class="stat-info">
-                        <span class="stat-value" id="cached-songs">0</span>
+                        <span class="stat-value" id="cached-songs">15</span>
                         <span class="stat-label">Cached</span>
                     </div>
                 </div>
@@ -141,7 +156,7 @@
                         <div class="song-artist-mini" id="current-song-artist">Select a song to play</div>
                     </div>
                 </div>
-                
+
                 <div class="mini-controls">
                     <button class="control-btn" id="prev-btn">
                         <i class="fas fa-step-backward"></i>
